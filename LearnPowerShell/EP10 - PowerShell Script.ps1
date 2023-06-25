@@ -35,8 +35,7 @@ Unblock-File -Path .\drive_warn.ps1
 
 param (
     [Parameter(Mandatory = $true)]
-    [string]
-    $Drive
+    [string]$Drive
 )
 
 if ($PSVersionTable.Platform -eq 'Unix') {

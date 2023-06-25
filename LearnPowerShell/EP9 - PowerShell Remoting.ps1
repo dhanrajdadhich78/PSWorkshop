@@ -39,7 +39,7 @@ Restart-Computer -ComputerName RemoteDevice -Credential $creds
 Restart-Computer -ComputerName RemoteDevice1, RemoteDevice2, RemoteDevice3 -Credential $creds
 
 # restart an entire list of computers
-$devices = Get-Content -Path C:\listOfServers.txt
+$devices = Get-Content -Path C:\sample.txt
 Restart-Computer -ComputerName $devices -Credential $Creds -Force
 
 #endregion

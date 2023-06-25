@@ -1,85 +1,88 @@
-﻿#____________________________________________________________
+#____________________________________________________________
 # https://www.myDemoBucket.info/manage-cloud-with-powershell/
 #____________________________________________________________
 
-#region AWS
+# #region AWS
 
-# ----------------------------------------------
-# AWS
-# ----------------------------------------------
+# # ----------------------------------------------
+# # AWS
+# # ----------------------------------------------
 
-# Install AWS.Tools - A Modularized Version of AWS Tools for PowerShell
-Install-Module -Name AWS.Tools.Installer
+# # Install AWS.Tools - A Modularized Version of AWS Tools for PowerShell
+# Install-Module -Name AWS.Tools.Installer
 
-# Get a list of AWS services supported by the Tools for PowerShell
-Import-Module AWS.Tools.Common
-Get-AWSService | Select-Object Service, ServiceName, ModuleName | Format-Table -AutoSize
+# # Get a list of AWS services supported by the Tools for PowerShell
+# Import-Module AWS.Tools.Common
+# Get-AWSService | Select-Object Service, ServiceName, ModuleName | Format-Table -AutoSize
 
-# Discover available AWS regions
-Get-AWSRegion
+# # Discover available AWS regions
+# Get-AWSRegion
 
-# Keep AWS.Tools versions in sync
-Update-AWSToolsModule
+# # Keep AWS.Tools versions in sync
+# Update-AWSToolsModule
 
-#___________________________________
-# Set AWS authentication and region
-# Import the AWS Tools Common module
-Import-Module AWS.Tools.Common
-# set the credential for the session
-Set-AWSCredential -AccessKey $aKey -SecretKey $sKey
-# set the default region for the session
-Set-DefaultAWSRegion -Region us-west-2
-#___________________________________
+# #___________________________________
+# # Set AWS authentication and region
+# # Import the AWS Tools Common module
+# Import-Module AWS.Tools.Common
+# # set the credential for the session
+# $aKey = b9dd67f8a59bb36a9a9b0219b9dd67f8a59bb36a9a9b0219
+# $sKey = b9dd67f8a59bb36a9a9b0219b9dd67f8a59bb36a9a9b0219b9dd67f8a59bb36a9a9b0219
 
-# AWS FINAL EXAMPLE
-# 1 - Create an S3 bucket
-# 2 - Make the S3 bucket secure - NO PUBLIC ACCESS
-# 3 - Upload a file to the new S3 bucket
-# 4 - Create a pre-signed URL to enable people to securely download the file worldwide
+# Set-AWSCredential -AccessKey $aKey -SecretKey $sKey
+# # set the default region for the session
+# Set-DefaultAWSRegion -Region us-west-2
+# #___________________________________
 
-# Install the AWS.Tools S3 module to work with Amazon Simple Storage Service (S3)
-Install-Module AWS.Tools.S3
-Import-Module AWS.Tools.S3
+# # AWS FINAL EXAMPLE
+# # 1 - Create an S3 bucket
+# # 2 - Make the S3 bucket secure - NO PUBLIC ACCESS
+# # 3 - Upload a file to the new S3 bucket
+# # 4 - Create a pre-signed URL to enable people to securely download the file worldwide
 
-# 1 - This command creates a new private bucket named "myDemoBucket".
-# https://docs.aws.amazon.com/powershell/latest/reference/items/New-S3Bucket.html
-New-S3Bucket -BucketName 'myDemoBucket'
-Get-S3PublicAccessBlock -BucketName 'myDemoBucket' # by default the bucket will not have public access blocked
+# # Install the AWS.Tools S3 module to work with Amazon Simple Storage Service (S3)
+# Install-Module AWS.Tools.S3
+# Import-Module AWS.Tools.S3
 
-# 2 - Adjust public access to the bucket to BLOCKED
-# https://docs.aws.amazon.com/powershell/latest/reference/items/Add-S3PublicAccessBlock.html
-$publicAccessBlockSplat = @{
-    PublicAccessBlockConfiguration_BlockPublicAcl       = $true
-    PublicAccessBlockConfiguration_IgnorePublicAcl      = $true
-    PublicAccessBlockConfiguration_BlockPublicPolicy    = $true
-    PublicAccessBlockConfiguration_RestrictPublicBucket = $true
-    BucketName                                          = 'myDemoBucket'
-}
-Add-S3PublicAccessBlock @publicAccessBlockSplat
-Get-S3PublicAccessBlock -BucketName 'myDemoBucket' # verify the new BLOCKED policy is in place
+# # 1 - This command creates a new private bucket named "myDemoBucket".
+# # https://docs.aws.amazon.com/powershell/latest/reference/items/New-S3Bucket.html
+# New-S3Bucket -BucketName 'myDemoBucket'
+# Get-S3PublicAccessBlock -BucketName 'myDemoBucket' # by default the bucket will not have public access blocked
 
-# 3 - Upload a local file on your drive to the new S3 bucket
-$filePath = 'C:\rs-pkgs\myDemoBucket_text_file.txt'
-$key = 'myDemoBucket_text_file.txt'
-$bucketName = 'myDemoBucket'
-# https://docs.aws.amazon.com/powershell/latest/reference/index.html?page=Write-S3Object.html&tocid=Write-S3Object
-# http://iwantmyreal.name/s3-download-only-presigned-upload
-$writeS3Splat = @{
-    BucketName       = $bucketName
-    File             = $filePath
-    Key              = $key
-    HeaderCollection = @{
-        'Content-Disposition' = "attachment; filename=""$key"""
-    }
-}
-Write-S3Object @writeS3Splat
+# # 2 - Adjust public access to the bucket to BLOCKED
+# # https://docs.aws.amazon.com/powershell/latest/reference/items/Add-S3PublicAccessBlock.html
+# $publicAccessBlockSplat = @{
+#     PublicAccessBlockConfiguration_BlockPublicAcl       = $true
+#     PublicAccessBlockConfiguration_IgnorePublicAcl      = $true
+#     PublicAccessBlockConfiguration_BlockPublicPolicy    = $true
+#     PublicAccessBlockConfiguration_RestrictPublicBucket = $true
+#     BucketName                                          = 'myDemoBucket'
+# }
+# Add-S3PublicAccessBlock @publicAccessBlockSplat
+# Get-S3PublicAccessBlock -BucketName 'myDemoBucket' # verify the new BLOCKED policy is in place
 
-# 4 - Create a pre-signed URL to securely allow others to download the file for a set period of time
-# https://docs.aws.amazon.com/powershell/latest/reference/items/Get-S3PreSignedURL.html
-# This URL will be good for 1 day - 24 hours!
-$url = Get-S3PreSignedURL -BucketName $bucketName -Key $key -Expire (Get-Date).AddDays(1)
+# # 3 - Upload a local file on your drive to the new S3 bucket
+# $filePath = '/Users/dhanraj/PS-Work/workshop/PSWorkshop/LearnPowerShell/sample.txt'
+# $key = './myDemoBucket_text_file.txt'
+# $bucketName = 'myDemoBucket'
+# # https://docs.aws.amazon.com/powershell/latest/reference/index.html?page=Write-S3Object.html&tocid=Write-S3Object
+# # http://iwantmyreal.name/s3-download-only-presigned-upload
+# $writeS3Splat = @{
+#     BucketName       = $bucketName
+#     File             = $filePath
+#     Key              = $key
+#     HeaderCollection = @{
+#         'Content-Disposition' = "attachment; filename=""$key"""
+#     }
+# }
+# Write-S3Object @writeS3Splat
 
-#endregion
+# # 4 - Create a pre-signed URL to securely allow others to download the file for a set period of time
+# # https://docs.aws.amazon.com/powershell/latest/reference/items/Get-S3PreSignedURL.html
+# # This URL will be good for 1 day - 24 hours!
+# $url = Get-S3PreSignedURL -BucketName $bucketName -Key $key -Expire (Get-Date).AddDays(1)
+
+# #endregion
 
 #region Azure
 

@@ -13,9 +13,9 @@
 
 #non-terminating errors don't stop loops
 $collection = @(
-    'C:\Test\newcsv.csv',
-    'c:\nope\nope.txt'
-    'C:\Test\newcsv2.csv'
+    'sampleCsv.csv',
+    'sample.txt'
+    'sampleCsv1.csv'
 )
 foreach ($item in $collection) {
     Get-Item $item
@@ -94,7 +94,8 @@ finally {
 
 #The website exists, but the page does not
 try {
-    $webResults = Invoke-WebRequest -Uri 'https://www.techthoughts.info/nope.htm'
+    $webResults = Invoke-WebRequest -Uri 'https://www.google.com'
+    $webResults
 }
 catch {
     Write-Error $_
@@ -102,7 +103,8 @@ catch {
 
 #The website exists, but the page does not
 try {
-    $webResults = Invoke-WebRequest -Uri 'https://www.techthoughts.info/nope.htm'
+    $webResults = Invoke-WebRequest -Uri 'https://www.google.com'
+    $webResults.Content
 }
 catch {
     $theError = $_

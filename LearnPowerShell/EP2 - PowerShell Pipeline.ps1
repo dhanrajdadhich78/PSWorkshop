@@ -37,7 +37,7 @@ Get-Process | ForEach-Object {$PSItem}
 # Format-List & Format-Table
 
 # Note the way things look using Format-Table
-Get-Process | Format-Table
+    Get-Process | Format-Table
 # Now see how that differs if you pipe instead to Format-List
 Get-Process | Format-List
 
